@@ -1,1 +1,36 @@
+name: Deploy Next.js to Vercel
 
+on:
+  push:
+    branches:
+      - main # Ganti dengan nama branch yang ingin Anda pantau (misalnya: master)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Sesuaikan dengan versi Node.js yang Anda gunakan
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Install dependencies
+        run: npm install
+
+      # Menjalankan build, opsional tapi disarankan
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          # Opsional: Jika Anda menggunakan scope (team) di Vercel
+          # VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          # VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
